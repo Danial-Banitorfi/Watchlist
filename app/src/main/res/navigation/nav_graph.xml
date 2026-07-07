@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.watchlist.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="Login"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -18,11 +18,17 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.watchlist.SecondFragment"
-        android:label="@string/second_fragment_label"
+        android:label="Registrieren"
         tools:layout="@layout/fragment_second">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/HomeFragment"
+        android:name="com.example.watchlist.HomeFragment"
+        android:label="Meine Watchlist"
+        tools:layout="@layout/fragment_home" />
 </navigation>

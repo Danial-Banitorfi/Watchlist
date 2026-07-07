@@ -1,16 +1,16 @@
 package com.example.watchlist
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import com.example.watchlist.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,28 +29,34 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         val navController = navHostFragment.navController
 
-        appBarConfiguration = AppBarConfiguration(navController.graph)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.FirstFragment, R.id.HomeFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
+        // HIER NEU: Listener, der merkt wenn wir die Seite wechseln
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            // Wenn wir auf eine neue Seite gehen, Menü neu prüfen
+            invalidateOptionsMenu()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        // Menü NUR auf dem HomeFragment (Hauptseite) anzeigen
+        if (navController.currentDestination?.id == R.id.HomeFragment) {
+            menuInflater.inflate(R.menu.menu_main, menu)
+            return true
+        }
+        return false // Auf allen anderen Seiten (Login/Register) kein Menü anzeigen
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_logout -> {
+                FirebaseAuth.getInstance().signOut()
+                val navController = findNavController(R.id.nav_host_fragment_content_main)
+                navController.navigate(R.id.FirstFragment)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -61,4 +67,3 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 }
-
