@@ -1,16 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/tv_home_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Watchlist"
+        android:text="Meine Watchlist"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:padding="4dp"/>
 
     <SearchView
         android:id="@+id/searchView"
@@ -22,10 +28,18 @@
         android:layout_marginBottom="16dp"/>
 
     <TextView
+        android:id="@+id/tv_list_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vorschläge für dich"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_movies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Hier erscheinen bald deine Filme.\n(Noch keine Daten vorhanden)"
-        android:textSize="16sp" />
+        tools:listitem="@layout/item_movie" />
 
 </LinearLayout>

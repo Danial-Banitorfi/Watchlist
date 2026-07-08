@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- NestedScrollView erlaubt das Scrollen, wenn der Text länger als der Bildschirm ist -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Das große Filmbild oben -->
+        <ImageView
+            android:id="@+id/iv_details_poster"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Der Titel des Films -->
+        <TextView
+            android:id="@+id/tv_details_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Das Veröffentlichungsdatum -->
+        <TextView
+            android:id="@+id/tv_details_release_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Titel für die Beschreibung -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Beschreibung"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Der eigentliche Text der Handlung -->
+        <TextView
+            android:id="@+id/tv_details_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Name des Regisseurs -->
+        <TextView
+            android:id="@+id/tv_details_director"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Liste der Schauspieler -->
+        <TextView
+            android:id="@+id/tv_details_actors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Container für die zwei Buttons nebeneinander -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Button für "Gesehen" -->
+            <Button
+                android:id="@+id/btn_mark_as_seen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Gesehen"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            <!-- Button für "Geplant" -->
+            <Button
+                android:id="@+id/btn_add_to_planned"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Geplant"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
