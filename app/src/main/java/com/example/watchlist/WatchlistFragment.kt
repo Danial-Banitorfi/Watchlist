@@ -68,7 +68,7 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
             .addSnapshotListener { value, error ->
                 // "Snapshot" bedeutet: Wenn sich in der Datenbank was ändert, 
                 // wird die App sofort automatisch aktualisiert!
-                if (error != null) return@addSnapshotListener
+                if (_binding == null || error != null) return@addSnapshotListener
                 
                 // Wir verwandeln die Datenbank-Dokumente in eine Liste von Movie-Objekten
                 val movies = value?.documents?.mapNotNull { it.toObject(Movie::class.java) } ?: emptyList()
@@ -79,7 +79,7 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
         db.collection("users").document(userId).collection("watchlist")
             .whereEqualTo("status", "planned") // Filter: Nur Filme mit Status "planned"
             .addSnapshotListener { value, error ->
-                if (error != null) return@addSnapshotListener
+                if (_binding == null || error != null) return@addSnapshotListener
                 
                 val movies = value?.documents?.mapNotNull { it.toObject(Movie::class.java) } ?: emptyList()
                 plannedAdapter.updateMovies(movies)

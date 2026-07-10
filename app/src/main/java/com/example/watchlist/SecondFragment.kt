@@ -23,18 +23,25 @@ class SecondFragment : Fragment(R.layout.fragment_second) {
         binding.btnRegister.setOnClickListener {
             val email = binding.etEmailRegister.text.toString()
             val password = binding.etPasswordRegister.text.toString()
+            val passwordConfirm = binding.etPasswordConfirmRegister.text.toString()
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(context, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show()
-                            // Nach Registrierung zurück zum Login oder direkt weiter
-                            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
-                        } else {
-                            Toast.makeText(context, "Fehler: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+            if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
+                if (password == passwordConfirm) {
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (_binding != null) {
+                                if (task.isSuccessful) {
+                                    Toast.makeText(context, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show()
+                                    // Nach Registrierung zurück zum Login oder direkt weiter
+                                    findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+                                } else {
+                                    Toast.makeText(context, "Fehler: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                                }
+                            }
                         }
-                    }
+                } else {
+                    Toast.makeText(context, "Passwörter stimmen nicht überein", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(context, "Bitte alle Felder ausfüllen", Toast.LENGTH_SHORT).show()
             }

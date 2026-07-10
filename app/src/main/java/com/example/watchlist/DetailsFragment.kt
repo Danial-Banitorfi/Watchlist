@@ -95,7 +95,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 .set(movieData) // Schreibt die Daten in das Dokument
                 .addOnSuccessListener {
                     // Wird ausgeführt, wenn das Internet geklappt hat
-                    val message = if (status == "seen") "Als gesehen markiert" else "Auf 'Geplant' gesetzt"
+                    val message = if (status == "seen") "Als gesehen markiert" else "Auf geplant gesetzt"
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
@@ -109,7 +109,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private fun loadCredits(movieId: Int) {
         TmdbClient.instance.getMovieCredits(movieId, API_KEY).enqueue(object : Callback<CreditsResponse> {
             override fun onResponse(call: Call<CreditsResponse>, response: Response<CreditsResponse>) {
-                if (response.isSuccessful) {
+                if (_binding != null && response.isSuccessful) {
                     val credits = response.body()
                     // Filtert die Crew nach dem Job "Director" (Regisseur)
                     val director = credits?.crew?.find { it.job == "Director" }?.name ?: "Unbekannt"
@@ -122,7 +122,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             }
 
             override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
-                binding.tvDetailsDirector.text = "Fehler beim Laden"
+                if (_binding != null) {
+                    binding.tvDetailsDirector.text = "Fehler beim Laden"
+                }
             }
         })
     }

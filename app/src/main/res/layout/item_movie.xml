@@ -8,37 +8,36 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
-    <!-- Ein vertikales Layout, damit Poster oben und Text unten steht (gut für schmale Spalten) -->
+    <!-- Ein horizontales Layout: Bild links, Text rechts (klassische Listen-Ansicht) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <!-- Das Filmbild -->
-        <!-- scaleType="centerCrop" schneidet das Bild passend zu, ohne es zu quetschen -->
+        <!-- Das Filmbild (festgelegte Breite für kompakte Ansicht) -->
         <ImageView
             android:id="@+id/iv_poster"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
             android:scaleType="centerCrop"
             android:src="@android:drawable/ic_menu_gallery" />
 
-        <!-- Container für die Texte (Titel und Jahr) -->
+        <!-- Container für die Texte -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="12dp"
+            android:gravity="center_vertical">
 
             <!-- Der Titel des Films -->
-            <!-- ellipsize="end" fügt "..." hinzu, wenn der Titel zu lang für eine Zeile ist -->
             <TextView
                 android:id="@+id/tv_movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:ellipsize="end"
                 android:text="Film Titel" />
 
@@ -48,7 +47,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="(2024)"
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
                 android:textColor="@android:color/darker_gray" />
 
         </LinearLayout>

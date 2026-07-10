@@ -86,7 +86,7 @@
                 android:layout_weight="1"
                 android:text="Gesehen"
                 android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+               />
 
             <!-- Button für "Geplant" -->
             <Button

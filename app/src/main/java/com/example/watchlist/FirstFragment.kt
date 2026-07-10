@@ -20,6 +20,12 @@ class FirstFragment : Fragment(R.layout.fragment_first) {
         _binding = FragmentFirstBinding.bind(view)
         auth = FirebaseAuth.getInstance()
 
+        // Prüfen, ob der Nutzer bereits eingeloggt ist
+        if (auth.currentUser != null) {
+            findNavController().navigate(R.id.HomeFragment)
+            return
+        }
+
         // Klick auf Login Button
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()

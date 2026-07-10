@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/HomeFragment"
         android:name="com.example.watchlist.HomeFragment"
-        android:label="Meine Watchlist"
+        android:label="Watchlist"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_HomeFragment_to_DetailsFragment"

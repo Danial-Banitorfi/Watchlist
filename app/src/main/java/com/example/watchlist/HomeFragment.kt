@@ -67,7 +67,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         // API-Anfrage starten
         TmdbClient.instance.getPopularMovies(API_KEY, page = randomPage).enqueue(object : Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                if (response.isSuccessful) {
+                if (_binding != null && response.isSuccessful) {
                     val movies = response.body()?.results ?: emptyList()
                     movieAdapter.updateMovies(movies)
                     // Titel der Liste aktualisieren
@@ -76,7 +76,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Toast.makeText(context, "Fehler: ${t.message}", Toast.LENGTH_SHORT).show()
+                if (_binding != null) {
+                    Toast.makeText(context, "Fehler: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
@@ -104,7 +106,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         // Suche bei TMDB ausführen
         TmdbClient.instance.searchMovies(API_KEY, query).enqueue(object : Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                if (response.isSuccessful) {
+                if (_binding != null && response.isSuccessful) {
                     val movies = response.body()?.results ?: emptyList()
                     movieAdapter.updateMovies(movies)
                     binding.tvListTitle.text = "Ergebnisse für: $query"
@@ -112,7 +114,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Toast.makeText(context, "Suche fehlgeschlagen", Toast.LENGTH_SHORT).show()
+                if (_binding != null) {
+                    Toast.makeText(context, "Suche fehlgeschlagen", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
