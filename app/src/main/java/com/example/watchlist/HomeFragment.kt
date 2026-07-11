@@ -26,6 +26,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     
     // Der Adapter verwaltet die Liste der Filme
     private lateinit var movieAdapter: MovieAdapter
+    
+    companion object {
+        // Statischer Speicher: Bleibt erhalten, solange die App offen ist
+        private var moviesCache: List<Movie>? = null
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,8 +45,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             findNavController().navigate(R.id.action_HomeFragment_to_WatchlistFragment)
         }
         
-        // Filme beim Start laden
-        loadPopularMovies()
+        // Filme nur laden, wenn wir noch keine haben (verhindert ständiges Reloading)
+        if (moviesCache == null) {
+            loadPopularMovies()
+        } else {
+            movieAdapter.updateMovies(moviesCache!!)
+            binding.tvListTitle.text = "Vorschläge für dich"
+        }
     }
 
     private fun setupRecyclerView() {
@@ -69,6 +79,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                 if (_binding != null && response.isSuccessful) {
                     val movies = response.body()?.results ?: emptyList()
+                    moviesCache = movies // Filme im statischen Speicher ablegen
                     movieAdapter.updateMovies(movies)
                     // Titel der Liste aktualisieren
                     binding.tvListTitle.text = "Vorschläge für dich"
@@ -95,7 +106,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
-                    loadPopularMovies() // Wieder Zufallsfilme zeigen, wenn Suche geleert wird
+                    // Statt neu zu laden, nutzen wir die gespeicherten Filme (Optimierung)
+                    moviesCache?.let {
+                        movieAdapter.updateMovies(it)
+                        binding.tvListTitle.text = "Vorschläge für dich"
+                    } ?: loadPopularMovies()
                 }
                 return false
             }

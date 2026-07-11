@@ -45,6 +45,11 @@ class MovieAdapter(
 
     override fun getItemCount() = movies.size
 
+    // Gibt den Film an einer bestimmten Position zurück (wichtig für das Löschen)
+    fun getMovieAt(position: Int): Movie {
+        return movies[position]
+    }
+
     fun updateMovies(newMovies: List<Movie>) {
         movies = newMovies
         notifyDataSetChanged()

@@ -9,14 +9,15 @@
         android:id="@+id/tv_home_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Meine Watchlist"
+        android:text="My Watchlist"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:background="?attr/selectableItemBackground"
-        android:padding="4dp"/>
+        android:background="@drawable/border_background"
+
+        />
 
     <SearchView
         android:id="@+id/searchView"

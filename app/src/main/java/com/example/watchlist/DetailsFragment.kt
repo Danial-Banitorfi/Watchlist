@@ -49,7 +49,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private fun displayMovieDetails(movie: Movie) {
         binding.tvDetailsTitle.text = movie.title
         binding.tvDetailsReleaseDate.text = "Veröffentlichung: ${movie.releaseDate}"
-        binding.tvDetailsOverview.text = movie.description
+        binding.tvDetailsOverview.text = movie.overview // Geändert auf overview
 
         // Glide lädt das Bild aus dem Internet in das ImageView (ivDetailsPoster)
         val posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
@@ -83,7 +83,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 "title" to movie.title,
                 "posterPath" to movie.posterPath,
                 "releaseDate" to movie.releaseDate,
-                "overview" to movie.description, // Jetzt speichern wir auch die Beschreibung
+                "overview" to movie.overview, // Geändert auf overview für Firebase
                 "status" to status // "seen" oder "planned"
             )
 

@@ -1,11 +1,17 @@
 package com.example.watchlist
 
 // Wir holen uns die nötigen Werkzeuge für UI, Listen und Datenbank
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.watchlist.databinding.FragmentWatchlistBinding
 import com.example.watchlist.models.Movie
 import com.google.firebase.auth.FirebaseAuth
@@ -41,20 +47,50 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
 
     private fun setupRecyclerViews() {
         // --- LINKE LISTE (Gesehen) ---
-        // LinearLayoutManager sorgt dafür, dass die Filme untereinander stehen
         binding.rvSeen.layoutManager = LinearLayoutManager(context)
-        // Wir erstellen den Adapter. Wenn man auf einen Film klickt, öffnen wir die Details.
-        seenAdapter = MovieAdapter(emptyList()) { movie ->
-            openDetails(movie)
-        }
+        seenAdapter = MovieAdapter(emptyList()) { movie -> openDetails(movie) }
         binding.rvSeen.adapter = seenAdapter
+        // Swipe-to-Delete hinzufügen
+        setupSwipeToDelete(binding.rvSeen, seenAdapter)
 
         // --- RECHTE LISTE (Geplant) ---
         binding.rvPlanned.layoutManager = LinearLayoutManager(context)
-        plannedAdapter = MovieAdapter(emptyList()) { movie ->
-            openDetails(movie)
-        }
+        plannedAdapter = MovieAdapter(emptyList()) { movie -> openDetails(movie) }
         binding.rvPlanned.adapter = plannedAdapter
+        // Swipe-to-Delete hinzufügen
+        setupSwipeToDelete(binding.rvPlanned, plannedAdapter)
+    }
+
+    // Funktion für das Wischen zum Löschen
+    private fun setupSwipeToDelete(recyclerView: RecyclerView, adapter: MovieAdapter) {
+        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val movie = adapter.getMovieAt(position)
+                deleteMovieFromFirestore(movie.id)
+            }
+
+            // Zeichnet den roten Hintergrund beim Wischen
+            override fun onChildDraw(c: Canvas, rv: RecyclerView, vh: RecyclerView.ViewHolder, dX: Float, dY: Float, state: Int, isActive: Boolean) {
+                val background = ColorDrawable(Color.RED)
+                background.setBounds(vh.itemView.right + dX.toInt(), vh.itemView.top, vh.itemView.right, vh.itemView.bottom)
+                background.draw(c)
+                super.onChildDraw(c, rv, vh, dX, dY, state, isActive)
+            }
+        }
+        ItemTouchHelper(swipeHandler).attachToRecyclerView(recyclerView)
+    }
+
+    private fun deleteMovieFromFirestore(movieId: Int) {
+        val userId = auth.currentUser?.uid ?: return
+        db.collection("users").document(userId).collection("watchlist")
+            .document(movieId.toString())
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "Film entfernt", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun loadWatchlistData() {

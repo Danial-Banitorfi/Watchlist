@@ -13,11 +13,13 @@
         android:padding="16dp">
 
         <!-- Das große Filmbild oben -->
+        <!-- adjustViewBounds="true" sorgt dafür, dass das Bild sein Format behält -->
         <ImageView
             android:id="@+id/iv_details_poster"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:scaleType="centerCrop"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             android:layout_marginBottom="16dp" />
 
         <!-- Der Titel des Films -->
