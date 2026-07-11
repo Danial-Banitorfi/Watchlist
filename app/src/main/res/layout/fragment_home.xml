@@ -23,7 +23,7 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:queryHint="Filme suchen..."
+        android:queryHint="Search..."
         android:iconifiedByDefault="false"
         android:background="@android:drawable/editbox_background"
         android:layout_marginBottom="16dp"/>
@@ -32,7 +32,7 @@
         android:id="@+id/tv_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vorschläge für dich"
+        android:text="Recommendations"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>

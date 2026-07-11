@@ -48,8 +48,16 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     // Zeigt Titel, Beschreibung und Cover an
     private fun displayMovieDetails(movie: Movie) {
         binding.tvDetailsTitle.text = movie.title
-        binding.tvDetailsReleaseDate.text = "Veröffentlichung: ${movie.releaseDate}"
-        binding.tvDetailsOverview.text = movie.overview // Geändert auf overview
+        binding.tvDetailsReleaseDate.text = "Release Date: ${movie.releaseDate}"
+        
+        // Falls die Beschreibung leer ist, zeigen wir einen Hinweistext an
+        if (movie.overview.isNullOrEmpty()) {
+            binding.tvDetailsOverview.text = "No description available for this movie."
+            binding.tvDetailsOverview.alpha = 0.5f // Text etwas ausgrauen
+        } else {
+            binding.tvDetailsOverview.text = movie.overview
+            binding.tvDetailsOverview.alpha = 1.0f
+        }
 
         // Glide lädt das Bild aus dem Internet in das ImageView (ivDetailsPoster)
         val posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
@@ -95,12 +103,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 .set(movieData) // Schreibt die Daten in das Dokument
                 .addOnSuccessListener {
                     // Wird ausgeführt, wenn das Internet geklappt hat
-                    val message = if (status == "seen") "Als gesehen markiert" else "Auf geplant gesetzt"
+                    val message = if (status == "seen") "Marked as seen" else "Added to planned"
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
                     // Wird ausgeführt, wenn ein Fehler auftritt
-                    Toast.makeText(context, "Fehler: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -112,18 +120,18 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 if (_binding != null && response.isSuccessful) {
                     val credits = response.body()
                     // Filtert die Crew nach dem Job "Director" (Regisseur)
-                    val director = credits?.crew?.find { it.job == "Director" }?.name ?: "Unbekannt"
-                    binding.tvDetailsDirector.text = "Regie: $director"
+                    val director = credits?.crew?.find { it.job == "Director" }?.name ?: "Unknown"
+                    binding.tvDetailsDirector.text = "Director: $director"
                     
                     // Nimmt die ersten 5 Schauspieler und trennt sie mit Komma
-                    val actors = credits?.cast?.take(5)?.joinToString(", ") { it.name } ?: "Keine Infos"
-                    binding.tvDetailsActors.text = "Schauspieler: $actors"
+                    val actors = credits?.cast?.take(5)?.joinToString(", ") { it.name } ?: "No info"
+                    binding.tvDetailsActors.text = "Actors: $actors"
                 }
             }
 
             override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
                 if (_binding != null) {
-                    binding.tvDetailsDirector.text = "Fehler beim Laden"
+                    binding.tvDetailsDirector.text = "Failed to load credits"
                 }
             }
         })

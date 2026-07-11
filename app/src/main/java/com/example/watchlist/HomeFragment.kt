@@ -50,7 +50,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             loadPopularMovies()
         } else {
             movieAdapter.updateMovies(moviesCache!!)
-            binding.tvListTitle.text = "Vorschläge für dich"
+
         }
     }
 
@@ -82,13 +82,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     moviesCache = movies // Filme im statischen Speicher ablegen
                     movieAdapter.updateMovies(movies)
                     // Titel der Liste aktualisieren
-                    binding.tvListTitle.text = "Vorschläge für dich"
+
                 }
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                 if (_binding != null) {
-                    Toast.makeText(context, "Fehler: ${t.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -109,7 +109,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     // Statt neu zu laden, nutzen wir die gespeicherten Filme (Optimierung)
                     moviesCache?.let {
                         movieAdapter.updateMovies(it)
-                        binding.tvListTitle.text = "Vorschläge für dich"
+
                     } ?: loadPopularMovies()
                 }
                 return false
@@ -124,13 +124,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 if (_binding != null && response.isSuccessful) {
                     val movies = response.body()?.results ?: emptyList()
                     movieAdapter.updateMovies(movies)
-                    binding.tvListTitle.text = "Ergebnisse für: $query"
+                    binding.tvListTitle.text = "Results for: $query"
                 }
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                 if (_binding != null) {
-                    Toast.makeText(context, "Suche fehlgeschlagen", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Search failed", Toast.LENGTH_SHORT).show()
                 }
             }
         })

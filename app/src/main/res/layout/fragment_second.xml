@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registrieren"
+        android:text="Register"
         android:textSize="24sp"
         android:layout_marginBottom="24dp"/>
 
@@ -16,35 +16,35 @@
         android:id="@+id/et_email_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="E-Mail"
+        android:hint="Email"
         android:inputType="text|textEmailAddress" />
 
     <EditText
         android:id="@+id/et_password_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Passwort"
+        android:hint="Password"
         android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/et_password_confirm_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Passwort bestätigen"
+        android:hint="Confirm Password"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Konto erstellen"
+        android:text="Create Account"
         android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/tv_go_to_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bereits ein Konto? Hier anmelden"
+        android:text="Already have an account? Login here"
         android:textColor="@color/black"
         android:layout_marginTop="16dp"/>
 </LinearLayout>

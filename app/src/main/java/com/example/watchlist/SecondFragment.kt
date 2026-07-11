@@ -31,19 +31,19 @@ class SecondFragment : Fragment(R.layout.fragment_second) {
                         .addOnCompleteListener { task ->
                             if (_binding != null) {
                                 if (task.isSuccessful) {
-                                    Toast.makeText(context, "Registrierung erfolgreich!", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()
                                     // Nach Registrierung zurück zum Login oder direkt weiter
                                     findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
                                 } else {
-                                    Toast.makeText(context, "Fehler: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
                 } else {
-                    Toast.makeText(context, "Passwörter stimmen nicht überein", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(context, "Bitte alle Felder ausfüllen", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
             }
         }
 

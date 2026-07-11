@@ -12,7 +12,7 @@ interface TmdbApi {
     @GET("movie/popular")
     fun getPopularMovies(
         @Query("api_key") apiKey: String,
-        @Query("language") language: String = "de-DE",
+        @Query("language") language: String = "en-US",
         @Query("page") page: Int // Neu: Erlaubt das Laden verschiedener Seiten
     ): Call<MovieResponse>
 
@@ -21,7 +21,7 @@ interface TmdbApi {
     fun searchMovies(
         @Query("api_key") apiKey: String,
         @Query("query") query: String,
-        @Query("language") language: String = "de-DE"
+        @Query("language") language: String = "en-US"
     ): Call<MovieResponse>
 
     // Holt Details wie Schauspieler und Regisseur

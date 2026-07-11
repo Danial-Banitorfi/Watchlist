@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.watchlist.SecondFragment"
-        android:label="Registrieren"
+        android:label="Register"
         tools:layout="@layout/fragment_second">
 
         <action
@@ -42,7 +42,7 @@
     <fragment
         android:id="@+id/WatchlistFragment"
         android:name="com.example.watchlist.WatchlistFragment"
-        android:label="Meine Listen"
+        android:label="Return"
         tools:layout="@layout/fragment_watchlist">
         <action
             android:id="@+id/action_WatchlistFragment_to_DetailsFragment"

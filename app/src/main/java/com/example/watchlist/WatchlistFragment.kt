@@ -89,7 +89,7 @@ class WatchlistFragment : Fragment(R.layout.fragment_watchlist) {
             .document(movieId.toString())
             .delete()
             .addOnSuccessListener {
-                Toast.makeText(context, "Film entfernt", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Movie removed", Toast.LENGTH_SHORT).show()
             }
     }
 

@@ -35,10 +35,10 @@ class FirstFragment : Fragment(R.layout.fragment_first) {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(context, "Login erfolgreich!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
                             findNavController().navigate(R.id.HomeFragment)
                         } else {
-                            Toast.makeText(context, "Fehler: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                         }
                     }
             }
