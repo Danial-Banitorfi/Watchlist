@@ -1,27 +1,51 @@
 package com.example.watchlist.api
 
-// Wir importieren Retrofit, das Tool für Internetabfragen
+// Retrofit ist die Standard-Bibliothek für Android, um HTTP-Anfragen (Internet) zu machen
 import retrofit2.Retrofit
-// Wir importieren den Converter, der JSON-Text in Kotlin-Objekte verwandelt
+// Der GSON-Converter hilft dabei, JSON-Antworten vom Server automatisch in Kotlin-Objekte umzuwandeln
 import retrofit2.converter.gson.GsonConverterFactory
 
-// "object" bedeutet: Es gibt nur eine einzige Instanz (Singleton) in der ganzen App
+/**
+ * OBJECT (Singleton-Pattern): 
+ * In Kotlin erstellt "object" eine Klasse, von der es systemweit nur eine einzige Instanz gibt.
+ * Das ist perfekt für einen API-Client, da wir nicht für jede Anfrage eine neue Verbindung
+ * aufbauen wollen, sondern eine einzige nutzen.
+ */
 object TmdbClient {
-    // Die Basis-URL, unter der alle TMDB-Abfragen starten
+    /**
+     * CONST VAL: Ein konstanter Wert, der zur Kompilierzeit feststeht.
+     * Die Basis-URL ist die Grundadresse der TMDB API.
+     */
     private const val BASE_URL = "https://api.themoviedb.org/3/"
 
-    // "lazy" bedeutet: Das Telefon wird erst vorbereitet, wenn wir es zum ersten Mal brauchen
+    /**
+     * BY LAZY: Das ist ein "Lazy Delegate".
+     * Die Variable "instance" wird nicht sofort beim App-Start erstellt, sondern erst in dem Moment,
+     * wenn sie zum ersten Mal aufgerufen wird (z.B. im HomeFragment).
+     * Das spart wertvolle Ressourcen (Arbeitsspeicher) beim Start der App.
+     */
     val instance: TmdbApi by lazy {
-        // Wir bauen das Retrofit-Objekt zusammen
+        /**
+         * Retrofit.Builder(): Hier nutzen wir das "Builder-Pattern", um unseren Client
+         * Schritt für Schritt zu konfigurieren.
+         */
         val retrofit = Retrofit.Builder()
-            // Wir sagen ihm, wo er im Internet suchen soll
+            // Hier legen wir die Grundadresse fest
             .baseUrl(BASE_URL)
-            // Wir fügen GSON hinzu, damit er den JSON-Salat vom Server automatisch versteht
+            /**
+             * addConverterFactory: Ohne diesen Zusatz würde Retrofit nur "Text" empfangen.
+             * GsonConverterFactory sorgt dafür, dass aus dem JSON-Text automatisch 
+             * Movie-Objekte werden.
+             */
             .addConverterFactory(GsonConverterFactory.create())
-            // Jetzt wird das Ganze fertig gebaut
+            // Schließt die Konfiguration ab und baut das Retrofit-Objekt
             .build()
 
-        // Hier verbinden wir unser "Telefon" (Retrofit) mit unserer "Nummernliste" (TmdbApi)
+        /**
+         * .create(TmdbApi::class.java):
+         * Hier geschieht die Magie. Retrofit nimmt unser Interface (TmdbApi) und 
+         * erstellt im Hintergrund den Code, der die Internetanfragen wirklich ausführt.
+         */
         retrofit.create(TmdbApi::class.java)
     }
 }

@@ -1,6 +1,5 @@
 package com.example.watchlist
 
-// Importe sind wie Werkzeuge, die wir aus dem Schrank holen
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -16,114 +15,137 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-// Die Klasse für die Detail-Anzeige
+/**
+ * DETAILS FRAGMENT:
+ * Zeigt die detaillierten Informationen eines ausgewählten Films an und ermöglicht
+ * das Speichern in der persönlichen Watchlist.
+ */
 class DetailsFragment : Fragment(R.layout.fragment_details) {
 
-    // _binding ist die Verbindung zu den UI-Elementen im XML
+    // View Binding: Sicherer Zugriff auf die XML-Elemente
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     
-    // Konstanten für den API-Zugriff und die Datenbank
+    // API-Key für TMDB und Instanzen für Firebase Dienste
     private val API_KEY = "c804cebbae0a6ec42aecbf76a22d7a77"
-    private val db = FirebaseFirestore.getInstance() // Startet die Firestore-Datenbank
-    private val auth = FirebaseAuth.getInstance() // Startet das Benutzer-System
+    private val db = FirebaseFirestore.getInstance() // Cloud-Datenbank
+    private val auth = FirebaseAuth.getInstance() // Authentifizierung
 
-    // Wird aufgerufen, wenn die Seite im Handy geladen wurde
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Verbindet das Layout mit dieser Datei
         _binding = FragmentDetailsBinding.bind(view)
 
-        // Holt den Film aus dem "Paket", das wir beim Klick gesendet haben
-        // "as? Movie" bedeutet: Versuche es als Film-Objekt zu lesen
+        /**
+         * DATEN-EMPFANG (Arguments):
+         * Wir holen das Movie-Objekt aus dem Bundle (Paket), das uns das 
+         * HomeFragment oder WatchlistFragment geschickt hat.
+         * 'as? Movie' ist ein sicherer Cast (Cast-Operator).
+         */
         val movie = arguments?.getSerializable("movie") as? Movie
 
-        // Wenn ein Film gefunden wurde, zeige die Details an
+        // Wenn der Film nicht null ist (let-Block), zeigen wir ihn an
         movie?.let {
             displayMovieDetails(it)
-            loadCredits(it.id)
+            loadCredits(it.id) // Lädt Regie und Schauspieler nach
         }
     }
 
-    // Zeigt Titel, Beschreibung und Cover an
+    /**
+     * DISPLAY LOGIC:
+     * Füllt die UI-Elemente mit den Daten aus dem Movie-Objekt.
+     */
     private fun displayMovieDetails(movie: Movie) {
         binding.tvDetailsTitle.text = movie.title
         binding.tvDetailsReleaseDate.text = "Release Date: ${movie.releaseDate}"
         
-        // Falls die Beschreibung leer ist, zeigen wir einen Hinweistext an
+        // Null-Check für die Beschreibung: Falls keine vorhanden, Text anpassen
         if (movie.overview.isNullOrEmpty()) {
             binding.tvDetailsOverview.text = "No description available for this movie."
-            binding.tvDetailsOverview.alpha = 0.5f // Text etwas ausgrauen
+            binding.tvDetailsOverview.alpha = 0.5f // Transparenz senken
         } else {
             binding.tvDetailsOverview.text = movie.overview
             binding.tvDetailsOverview.alpha = 1.0f
         }
 
-        // Glide lädt das Bild aus dem Internet in das ImageView (ivDetailsPoster)
+        /**
+         * GLIDE: Lädt das Poster-Bild asynchron über die URL.
+         */
         val posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
         Glide.with(this)
             .load(posterUrl)
             .placeholder(android.R.drawable.ic_menu_gallery)
             .into(binding.ivDetailsPoster)
             
-        // Button "Gesehen" - Syntax: setOnClickListener reagiert auf Fingertipp
+        /**
+         * CLICK-LISTENER:
+         * Hier entscheiden wir, unter welchem Status der Film in Firestore gespeichert wird.
+         */
         binding.btnMarkAsSeen.setOnClickListener {
-            // Wir rufen unsere Speicher-Funktion mit dem Status "seen" auf
             saveMovieWithStatus(movie, "seen")
         }
 
-        // Button "Geplant"
         binding.btnAddToPlanned.setOnClickListener {
-            // Wir rufen unsere Speicher-Funktion mit dem Status "planned" auf
             saveMovieWithStatus(movie, "planned")
         }
     }
 
-    // Speichert den Film in der Cloud
+    /**
+     * FIRESTORE-LOGIK:
+     * Speichert die Filmdaten in der Cloud-Datenbank unter dem Profil des Users.
+     */
     private fun saveMovieWithStatus(movie: Movie, status: String) {
-        // Holt die ID des aktuell angemeldeten Benutzers
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            // Erstellt eine Liste (Map) mit den Filmdaten und dem neuen Status
-            // "to" verknüpft einen Namen (Key) mit einem Wert (Value)
+            /**
+             * MAP (Hashmap): Wir erstellen ein Schlüssel-Wert-Paar-Objekt für Firebase.
+             * Firebase Firestore speichert Daten im JSON-ähnlichen Format.
+             */
             val movieData = hashMapOf(
                 "id" to movie.id,
                 "title" to movie.title,
                 "posterPath" to movie.posterPath,
                 "releaseDate" to movie.releaseDate,
-                "overview" to movie.overview, // Geändert auf overview für Firebase
-                "status" to status // "seen" oder "planned"
+                "overview" to movie.overview,
+                "status" to status // "seen" (gesehen) oder "planned" (geplant)
             )
 
-            // Pfad in der Datenbank: users -> UID -> watchlist -> MovieID
+            /**
+             * HIERARCHIE IN FIRESTORE:
+             * users (Sammlung) -> [UID des Users] (Dokument) -> watchlist (Untersammlung) -> [MovieID] (Dokument)
+             */
             db.collection("users")
                 .document(currentUser.uid)
                 .collection("watchlist")
                 .document(movie.id.toString())
-                .set(movieData) // Schreibt die Daten in das Dokument
+                .set(movieData) // .set überschreibt oder erstellt das Dokument
                 .addOnSuccessListener {
-                    // Wird ausgeführt, wenn das Internet geklappt hat
                     val message = if (status == "seen") "Marked as seen" else "Added to planned"
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
-                    // Wird ausgeführt, wenn ein Fehler auftritt
                     Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
-    // Lädt Regisseur und Schauspieler von TMDB
+    /**
+     * API-LOGIK (Credits):
+     * Holt zusätzliche Infos (Schauspieler/Regie), die nicht im Standard-Film-Objekt sind.
+     */
     private fun loadCredits(movieId: Int) {
         TmdbClient.instance.getMovieCredits(movieId, API_KEY).enqueue(object : Callback<CreditsResponse> {
             override fun onResponse(call: Call<CreditsResponse>, response: Response<CreditsResponse>) {
                 if (_binding != null && response.isSuccessful) {
                     val credits = response.body()
-                    // Filtert die Crew nach dem Job "Director" (Regisseur)
+                    
+                    // .find { ... }: Durchsucht die Crew-Liste nach dem ersten "Director"
                     val director = credits?.crew?.find { it.job == "Director" }?.name ?: "Unknown"
                     binding.tvDetailsDirector.text = "Director: $director"
                     
-                    // Nimmt die ersten 5 Schauspieler und trennt sie mit Komma
+                    /**
+                     * joinToString: Verwandelt eine Liste von Namen in einen einzigen String,
+                     * getrennt durch Kommata. .take(5) nimmt nur die ersten 5 Personen.
+                     */
                     val actors = credits?.cast?.take(5)?.joinToString(", ") { it.name } ?: "No info"
                     binding.tvDetailsActors.text = "Actors: $actors"
                 }
