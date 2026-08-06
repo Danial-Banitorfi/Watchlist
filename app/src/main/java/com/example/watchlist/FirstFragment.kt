@@ -77,6 +77,33 @@ class FirstFragment : Fragment(R.layout.fragment_first) {
         binding.tvGoToRegister.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+
+        /**
+         * FORGOT PASSWORD LOGIC:
+         * Ermöglicht es dem User, eine E-Mail zum Zurücksetzen des Passworts zu erhalten.
+         * Firebase übernimmt dabei den Versand der E-Mail und die Bereitstellung der Webseite
+         * zum Ändern des Passworts.
+         */
+        binding.tvForgotPassword.setOnClickListener {
+            val email = binding.etEmail.text.toString().trim()
+
+            if (email.isNotEmpty()) {
+                // Firebase-Funktion zum Senden der Reset-E-Mail
+                auth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Erfolg: E-Mail wurde verschickt
+                            Toast.makeText(context, "Reset email sent to $email", Toast.LENGTH_LONG).show()
+                        } else {
+                            // Fehler: Z.B. E-Mail-Adresse nicht in der Datenbank
+                            Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                        }
+                    }
+            } else {
+                // Hinweis: Der User muss erst seine E-Mail eingeben, damit wir wissen, wohin die Mail soll
+                Toast.makeText(context, "Please enter your email address first", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

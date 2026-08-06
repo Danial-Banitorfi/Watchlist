@@ -34,6 +34,15 @@
         android:layout_marginTop="16dp"/>
 
     <TextView
+        android:id="@+id/tv_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"/>
+
+    <TextView
         android:id="@+id/tv_go_to_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
